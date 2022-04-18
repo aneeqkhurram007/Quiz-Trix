@@ -15,7 +15,6 @@ export default function Login() {
 
   useEffect(() => {
     if (data?.email) {
-      console.log("Me", data);
       router.replace("/");
     }
   }, [data, loading, error]);
@@ -26,7 +25,6 @@ export default function Login() {
         values.email,
         values.password
       );
-      console.log(user);
       dispatch(
         setUser({
           email: user.user.email,

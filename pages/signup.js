@@ -5,17 +5,18 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useMe from "../hooks/useMe";
+import { setUser, setUserData } from "../reducers/userReducer";
+import { useDispatch } from "react-redux";
 
 export default function Signup() {
+  const dispatch = useDispatch();
   const router = useRouter();
-  const me = useMe();
-  // useEffect(() => {
-  //   console.log(auth.currentUser);
-
-  //   if (me) {
-  //     router.replace("/");
-  //   }
-  // }, [me, router]);
+  const { data, loading, error } = useMe();
+  useEffect(() => {
+    if (data?.email) {
+      router.replace("/");
+    }
+  }, [data, loading, error]);
 
   const [alertMessage, setalertMessage] = useState("");
   const onFinish = async (values) => {
@@ -32,6 +33,14 @@ export default function Signup() {
         isSuperUser: false,
         timestamp: serverTimestamp(),
       });
+      dispatch(
+        setUser({
+          email: user.user.email,
+          accessToken: user.user.accessToken,
+          expirationTime: user.user.stsTokenManager.expirationTime,
+        })
+      );
+
       setalertMessage("success");
       setTimeout(() => {
         router.replace("/");

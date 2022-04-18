@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  user: null,
+  userAuth: null,
+  userData: null,
 };
 const userSlice = createSlice({
   name: "user",
@@ -13,18 +14,21 @@ const userSlice = createSlice({
         email: action.payload.email,
       };
       localStorage.setItem("user", JSON.stringify(user));
-      state.user = user;
+      state.userAuth = user;
     },
     getUser: (state, action) => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (user?.expirationTime > Date.now()) {
-        state.user = user;
+        state.userAuth = user;
       } else {
         localStorage.removeItem("user");
-        state.user = null;
+        state.userAuth = null;
       }
+    },
+    setUserData: (state, action) => {
+      state.userData = action.payload;
     },
   },
 });
-export const { setUser, getUser } = userSlice.actions;
+export const { setUser, getUser, setUserData } = userSlice.actions;
 export default userSlice.reducer;
