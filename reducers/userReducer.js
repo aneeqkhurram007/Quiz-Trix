@@ -8,13 +8,18 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const user = {
-        accessToken: action.payload.accessToken,
-        expirationTime: action.payload.expirationTime,
-        email: action.payload.email,
-      };
-      localStorage.setItem("user", JSON.stringify(user));
-      state.userAuth = user;
+      if (action.payload === null) {
+        state.userAuth = null;
+        localStorage.removeItem("user");
+      } else {
+        const user = {
+          accessToken: action.payload.accessToken,
+          expirationTime: action.payload.expirationTime,
+          email: action.payload.email,
+        };
+        localStorage.setItem("user", JSON.stringify(user));
+        state.userAuth = user;
+      }
     },
     getUser: (state, action) => {
       const user = JSON.parse(localStorage.getItem("user"));

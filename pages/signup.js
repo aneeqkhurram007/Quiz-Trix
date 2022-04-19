@@ -5,8 +5,9 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useMe from "../hooks/useMe";
-import { setUser, setUserData } from "../reducers/userReducer";
+import { setUser } from "../reducers/userReducer";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -53,9 +54,12 @@ export default function Signup() {
 
   return (
     <div className="flex flex-col space-y-10 justify-center items-center min-h-screen">
-      <div className="flex flex-col items-center space-y-4 px-10 animate-bounce">
-        <h1 className="text-5xl">Signin</h1>
-        <h2 className="text-xl">Already have an account. Login</h2>
+      <div className="flex flex-col items-center space-y-4 px-10 ">
+        <h1 className="text-5xl animate-bounce">Signin</h1>
+        <h2 className="text-xl">
+          Already have an account.
+          <Link href={"/login"}> Login</Link>
+        </h2>
       </div>
       {alertMessage === "success" && (
         <Alert

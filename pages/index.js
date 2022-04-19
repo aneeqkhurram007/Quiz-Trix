@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 import Main from "../components/Main";
 import Footer from "../components/Footer";
 import { useEffect } from "react";
-import { auth } from "../firebase";
 import { useRouter } from "next/router";
 import useMe from "../hooks/useMe";
 

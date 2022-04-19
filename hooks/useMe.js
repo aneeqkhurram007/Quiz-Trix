@@ -41,11 +41,12 @@ export default function useMe() {
     if (!userState?.userAuth) {
       setstate({ error: true, loading: false });
       dispatch(getUser());
+      dispatch(setUserData(null));
     }
     if (userState?.userAuth && !userState?.userData) {
       getUserData();
     }
-    if (userState?.userData) {
+    if (userState?.userAuth && userState?.userData) {
       setstate({ ...state, loading: false, data: userState?.userData });
     }
   }, [userState, dispatch]);

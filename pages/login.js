@@ -1,11 +1,13 @@
 import { Form, Input, Button, Checkbox, Alert } from "antd";
-import { auth } from "../firebase";
+import { auth, db, firebase } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useMe from "../hooks/useMe";
-import { setUser } from "../reducers/userReducer";
+import { setUser, setUserData } from "../reducers/userReducer";
+import Link from "next/link";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function Login() {
   const router = useRouter();
@@ -20,18 +22,29 @@ export default function Login() {
   }, [data, loading, error]);
   const onFinish = async (values) => {
     try {
+      const userData = await getDocs(
+        query(collection(db, "users"), where("email", "==", values.email))
+      );
       const user = await signInWithEmailAndPassword(
         auth,
         values.email,
         values.password
       );
-      dispatch(
-        setUser({
-          email: user.user.email,
-          accessToken: user.user.accessToken,
-          expirationTime: user.user.stsTokenManager.expirationTime,
-        })
-      );
+      if (userData.docs[0].data().email == values.email) {
+        dispatch(
+          setUserData({ id: userData.docs[0].id, ...userData.docs[0].data() })
+        );
+        dispatch(
+          setUser({
+            email: user.user.email,
+            accessToken: user.user.accessToken,
+            expirationTime: user.user.stsTokenManager.expirationTime,
+          })
+        );
+      } else {
+        throw new Error("User not found");
+      }
+
       setalertMessage("success");
     } catch (error) {
       console.log(error);
@@ -41,9 +54,12 @@ export default function Login() {
 
   return (
     <div className="flex flex-col space-y-10 justify-center items-center min-h-screen">
-      <div className="flex flex-col items-center space-y-4 px-10 animate-bounce">
-        <h1 className="text-5xl">Login</h1>
-        <h2 className="text-xl">Don&apos;t have an account. Signup</h2>
+      <div className="flex flex-col items-center space-y-4 px-10 ">
+        <h1 className="text-5xl animate-bounce">Login</h1>
+        <h2 className="text-xl">
+          Don&apos;t have an account.
+          <Link href="/signup"> Signup</Link>
+        </h2>
       </div>
       {alertMessage === "success" && (
         <Alert message="You have been logged in successfully" type="success" />
