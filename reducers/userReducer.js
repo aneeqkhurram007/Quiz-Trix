@@ -14,7 +14,7 @@ const userSlice = createSlice({
       } else {
         const user = {
           accessToken: action.payload.accessToken,
-          expirationTime: action.payload.expirationTime,
+          expirationTime: action.payload.expirationTime * 1.00005,
           email: action.payload.email,
         };
         localStorage.setItem("user", JSON.stringify(user));
