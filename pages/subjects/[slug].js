@@ -23,9 +23,7 @@ const Subject = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <div className="flex-1 min-h-screen">
-        <Questions />
-      </div>
+      <div className="flex-1 min-h-screen">{/* <Questions /> */}</div>
       <Footer />
     </div>
   );
