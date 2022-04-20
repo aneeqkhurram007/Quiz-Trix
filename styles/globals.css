@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import '~antd/dist/antd.css';
+
+.ant-btn-primary{
+    background-color: #60aef8;
+}

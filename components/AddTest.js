@@ -15,7 +15,7 @@ const AddTest = ({ subject }) => {
   const [visible, setVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const [modalText, setModalText] = React.useState("Content of the modal");
-  const [numberOfQuestions, setnumberOfQuestions] = useState(0);
+  const [numberOfQuestions, setnumberOfQuestions] = useState(1);
   const [questions, setquestions] = useState([]);
   const [testName, setTestName] = useState("");
   const data = Array(numberOfQuestions).fill(0);
@@ -105,6 +105,7 @@ const AddTest = ({ subject }) => {
             <label>Number of Questions</label>
             <InputNumber
               controls={true}
+              min={1}
               onChange={(value) => setnumberOfQuestions(value)}
             />
           </div>

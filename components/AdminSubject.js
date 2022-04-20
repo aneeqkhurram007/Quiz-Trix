@@ -25,7 +25,7 @@ const AdminSubject = ({ subject }) => {
         settests(snaphot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       }
     );
-  }, []);
+  }, [subject]);
   const deleteTest = async (id) => {
     try {
       await deleteDoc(doc(db, `subjects/${subject}/test/${id}`));
@@ -33,9 +33,19 @@ const AdminSubject = ({ subject }) => {
       console.log(error);
     }
   };
+  const deleteSubject = async () => {
+    try {
+      await deleteDoc(doc(db, `subjects/${subject}`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <AddTest subject={subject} />
+      <Button delete onClick={deleteSubject}>
+        Delete Subject
+      </Button>
       <Collapse accordion>
         {tests?.map((test) => (
           <Panel
