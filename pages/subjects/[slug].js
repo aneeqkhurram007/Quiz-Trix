@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { List, Card, Row, Col, Input } from "antd";
+import { List, Card, Row, Col, Input, Button } from "antd";
 import { db } from "../../firebase";
 import _ from "lodash";
 import {
@@ -87,7 +87,7 @@ const Subject = () => {
                         />
                       );
                       setsection(false);
-                      addUser(test.id);
+                      // addUser(test.id);
                     }}
                     className="w-full"
                     title={test.testName}
@@ -112,35 +112,73 @@ const Subject = () => {
 
 export default Subject;
 function QuizQuestions({ quiz, name }) {
-  const arrayData = Array(4).fill(0);
+  const [question, setquestion] = useState(quiz[0]);
+  const [counter, setcounter] = useState(0);
+  const [selectedAnswer, setselectedAnswer] = useState("");
+  const [answers, setanswers] = useState([]);
+  const [withinTime, setwithinTime] = useState(false);
+  const [timer, settimer] = useState(0);
+  useEffect(() => {
+    setTimeout(() => {
+      if (timer < 29) {
+        settimer(timer + 1);
+      }
+    }, 1000);
+    if (counter < quiz.length - 1 && !withinTime) {
+      setTimeout(() => {
+        setcounter(counter + 1);
+        setquestion(quiz[counter + 1]);
+        setwithinTime(false);
+      }, 30000);
+    }
+  }, [counter, quiz, withinTime, timer]);
 
+  const nextQuestion = () => {
+    setanswers([...answers, selectedAnswer]);
+    setcounter(counter + 1);
+    settimer(0);
+    setquestion(quiz[counter + 1]);
+    setwithinTime(true);
+  };
   return (
-    <div className="flex-1 flex w-full min-h-screen p-10">
-      <div className="w-1/2 border-r flex items-center justify-start px-4">
-        <h1 className="text-4xl">Question</h1>
-      </div>
+    <>
+      <h1 className="text-5xl pt-20 pl-20">
+        {name} <small>00:{timer}</small>
+      </h1>
+      <div className="flex-1 flex w-full min-h-fit p-10">
+        <div className="w-1/2 border-r flex items-start justify-start pl-10">
+          <h1 className="text-4xl">{question.question}</h1>
+        </div>
 
-      <div className="w-1/2 flex items-center justify-start border-l px-4">
-        <form>
+        <div className="w-1/2 flex flex-col space-y-10 items-start justify-start border-l px-4">
           <List
-            dataSource={arrayData}
+            dataSource={Object.entries(question.options).sort()}
             renderItem={(item, index) => (
               <List.Item>
-                <label className="text-lg mx-5 ">A</label>
+                <label className="text-lg mx-5 ">{item[0]}</label>
                 <Input
+                  onChange={() => {
+                    setselectedAnswer(item[0]);
+                  }}
+                  value={selectedAnswer}
                   className="text-blue-700"
                   name="radioButton"
                   type="radio"
                   placeholder="Item"
                 />
                 <label className="text-lg mx-5 rounded bg-gray-200 p-1">
-                  {index}
+                  {item[1]}
                 </label>
               </List.Item>
             )}
           />
-        </form>
+          {counter < quiz.length - 1 ? (
+            <Button onClick={nextQuestion} type="primary" className="ml-5">
+              Next
+            </Button>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
