@@ -6,3 +6,9 @@
 .ant-btn-primary{
     background-color: #60aef8;
 }
+input[type="radio"]{
+    margin-right: 10px;
+    height: 20px;
+    width: 20px;
+    color: #60aef8;
+}

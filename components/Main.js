@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Menu } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import { db } from "../firebase";
+import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
 const { SubMenu } = Menu;
 const { Content, Sider } = Layout;
 
 const Main = () => {
+  const [subjects, setsubjects] = useState([]);
+  useEffect(() => {
+    onSnapshot(
+      query(collection(db, "subjects"), orderBy("timestamp", "asc")),
+      (snapshot) => {
+        setsubjects(
+          snapshot.docs?.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
+      }
+    );
+  }, []);
+
   return (
     <Content className="flex-1" style={{ padding: "0 50px" }}>
       <Layout
@@ -19,36 +33,18 @@ const Main = () => {
             style={{ height: "100%" }}
           >
             <SubMenu key="sub1" icon={<UserOutlined />} title="Subjects">
-              <Menu.Item key="1">
-                <Link
-                  href={{
-                    pathname: "/subjects/[slug]",
-                    query: { slug: "english" },
-                  }}
-                >
-                  English
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link
-                  href={{
-                    pathname: "/subjects/[slug]",
-                    query: { slug: "maths" },
-                  }}
-                >
-                  Math
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Link
-                  href={{
-                    pathname: "/subjects/[slug]",
-                    query: { slug: "physics" },
-                  }}
-                >
-                  Physics
-                </Link>
-              </Menu.Item>
+              {subjects?.map((subject, index) => (
+                <Menu.Item key={index}>
+                  <Link
+                    href={{
+                      pathname: "/subjects/[slug]",
+                      query: { slug: subject.id },
+                    }}
+                  >
+                    {subject.id}
+                  </Link>
+                </Menu.Item>
+              ))}
             </SubMenu>
           </Menu>
         </Sider>
