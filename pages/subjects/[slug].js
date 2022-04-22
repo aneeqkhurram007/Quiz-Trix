@@ -19,6 +19,7 @@ import {
   arrayUnion,
   updateDoc,
 } from "firebase/firestore";
+import Result from "../../components/Result";
 
 const Subject = () => {
   const router = useRouter();
@@ -113,73 +114,84 @@ const Subject = () => {
 
 export default Subject;
 function QuizQuestions({ quiz, name }) {
-  const [question, setquestion] = useState(quiz[0]);
   const [counter, setcounter] = useState(0);
+  const [question, setquestion] = useState(quiz[0]);
   const [selectedAnswer, setselectedAnswer] = useState("");
   const [answers, setanswers] = useState([]);
-  const [withinTime, setwithinTime] = useState(false);
-  const [initialTime, setinitialTime] = useState(30000);
-  const interval = 1000; // interval to change remaining time amount, defaults to 1000
+  const [initialTime, setinitialTime] = useState(30000 * quiz.length);
+  const interval = 1000;
 
   const [timeLeft, { start }] = useCountDown(initialTime, interval);
-
   useEffect(() => {
     start();
-    if (counter < quiz.length - 1 && !withinTime) {
-      setTimeout(() => {
-        setcounter(counter + 1);
-        setquestion(quiz[counter + 1]);
-        setwithinTime(false);
-      }, 30000);
-    }
-  }, [counter, quiz, withinTime]);
+    setTimeout(() => {
+      setcounter(quiz.length);
+    }, initialTime);
+  }, []);
 
   const nextQuestion = () => {
     setanswers([...answers, selectedAnswer]);
+    setselectedAnswer(null);
     setcounter(counter + 1);
-    start(0);
+    start(30000);
     setquestion(quiz[counter + 1]);
-    setwithinTime(true);
+  };
+  const result = () => {
+    setanswers([...answers, selectedAnswer]);
+    setselectedAnswer(null);
+    setcounter(counter + 1);
   };
   return (
     <>
       <h1 className="text-5xl pt-20 pl-20">
-        {name} <small>{(timeLeft / 1000).toFixed(2)}</small>
+        {name}{" "}
+        <small>
+          {"Total Time Left: "}{" "}
+          {counter < quiz.length ? (timeLeft / 1000).toFixed(2) : "00:00"}
+        </small>
       </h1>
-      <div className="flex-1 flex w-full min-h-fit p-10">
-        <div className="w-1/2 border-r flex items-start justify-start pl-10">
-          <h1 className="text-4xl">{question.question}</h1>
-        </div>
+      {counter === quiz.length ? (
+        <Result questions={quiz} answers={answers} />
+      ) : (
+        <div className="flex-1 flex w-full min-h-fit p-10">
+          <div className="w-1/2 border-r flex items-start justify-start pl-10">
+            <h1 className="text-4xl">{question?.question}</h1>
+          </div>
 
-        <div className="w-1/2 flex flex-col space-y-10 items-start justify-start border-l px-4">
-          <List
-            dataSource={Object.entries(question.options).sort()}
-            renderItem={(item, index) => (
-              <List.Item>
-                <label className="text-lg mx-5 ">{item[0]}</label>
-                <Input
-                  onChange={() => {
-                    setselectedAnswer(item[0]);
-                  }}
-                  value={selectedAnswer}
-                  className="text-blue-700"
-                  name="radioButton"
-                  type="radio"
-                  placeholder="Item"
-                />
-                <label className="text-lg mx-5 rounded bg-gray-200 p-1">
-                  {item[1]}
-                </label>
-              </List.Item>
+          <div className="w-1/2 flex flex-col space-y-10 items-start justify-start border-l px-4">
+            <List
+              dataSource={Object.entries(question?.options).sort()}
+              renderItem={(item, index) => (
+                <List.Item>
+                  <label className="text-lg mx-5 ">{item[0]}</label>
+                  <Input
+                    onChange={() => {
+                      setselectedAnswer(item[0]);
+                    }}
+                    value={selectedAnswer}
+                    className="text-blue-700"
+                    name="radioButton"
+                    type="radio"
+                    placeholder="Item"
+                  />
+                  <label className="text-lg mx-5 rounded bg-gray-200 p-1">
+                    {item[1]}
+                  </label>
+                </List.Item>
+              )}
+            />
+            {counter < quiz.length - 1 ? (
+              <Button onClick={nextQuestion} type="primary" className="ml-5">
+                Next
+              </Button>
+            ) : (
+              <Button onClick={result} type="primary" className="ml-5">
+                Result
+              </Button>
             )}
-          />
-          {counter < quiz.length - 1 ? (
-            <Button onClick={nextQuestion} type="primary" className="ml-5">
-              Next
-            </Button>
-          ) : null}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
