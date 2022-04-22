@@ -7,6 +7,7 @@ import Footer from "../../components/Footer";
 import { List, Card, Row, Col, Input, Button } from "antd";
 import { db } from "../../firebase";
 import _ from "lodash";
+import useCountDown from "react-countdown-hook";
 import {
   onSnapshot,
   collection,
@@ -117,13 +118,13 @@ function QuizQuestions({ quiz, name }) {
   const [selectedAnswer, setselectedAnswer] = useState("");
   const [answers, setanswers] = useState([]);
   const [withinTime, setwithinTime] = useState(false);
-  const [timer, settimer] = useState(0);
+  const [initialTime, setinitialTime] = useState(30000);
+  const interval = 1000; // interval to change remaining time amount, defaults to 1000
+
+  const [timeLeft, { start }] = useCountDown(initialTime, interval);
+
   useEffect(() => {
-    setTimeout(() => {
-      if (timer < 29) {
-        settimer(timer + 1);
-      }
-    }, 1000);
+    start();
     if (counter < quiz.length - 1 && !withinTime) {
       setTimeout(() => {
         setcounter(counter + 1);
@@ -131,19 +132,19 @@ function QuizQuestions({ quiz, name }) {
         setwithinTime(false);
       }, 30000);
     }
-  }, [counter, quiz, withinTime, timer]);
+  }, [counter, quiz, withinTime]);
 
   const nextQuestion = () => {
     setanswers([...answers, selectedAnswer]);
     setcounter(counter + 1);
-    settimer(0);
+    start(0);
     setquestion(quiz[counter + 1]);
     setwithinTime(true);
   };
   return (
     <>
       <h1 className="text-5xl pt-20 pl-20">
-        {name} <small>00:{timer}</small>
+        {name} <small>{(timeLeft / 1000).toFixed(2)}</small>
       </h1>
       <div className="flex-1 flex w-full min-h-fit p-10">
         <div className="w-1/2 border-r flex items-start justify-start pl-10">
