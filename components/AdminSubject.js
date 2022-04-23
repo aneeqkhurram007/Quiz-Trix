@@ -1,4 +1,4 @@
-import { Button, Collapse } from "antd";
+import { Button, Collapse, List } from "antd";
 import React, { useEffect, useState } from "react";
 import AddTest from "./AddTest";
 import Questions from "./Questions";
@@ -64,7 +64,17 @@ const AdminSubject = ({ subject }) => {
                   questions={test.questions}
                 />
               </Panel>
-              <Panel>Users appeared along with the results</Panel>
+              <Panel header={"Appeared Users"}>
+                <List
+                  bordered
+                  dataSource={test?.users}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <p>{item}</p>
+                    </List.Item>
+                  )}
+                />
+              </Panel>
             </Collapse>
           </Panel>
         ))}

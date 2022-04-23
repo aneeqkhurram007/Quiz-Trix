@@ -89,7 +89,7 @@ const Subject = () => {
                         />
                       );
                       setsection(false);
-                      // addUser(test.id);
+                      addUser(test.id);
                     }}
                     className="w-full"
                     title={test.testName}
@@ -131,9 +131,8 @@ function QuizQuestions({ quiz, name }) {
 
   const nextQuestion = () => {
     setanswers([...answers, selectedAnswer]);
-    setselectedAnswer(null);
+    setselectedAnswer(undefined);
     setcounter(counter + 1);
-    start(30000);
     setquestion(quiz[counter + 1]);
   };
   const result = () => {
@@ -158,9 +157,9 @@ function QuizQuestions({ quiz, name }) {
             <h1 className="text-4xl">{question?.question}</h1>
           </div>
 
-          <div className="w-1/2 flex flex-col space-y-10 items-start justify-start border-l px-4">
+          <form className="w-1/2 flex flex-col space-y-10 items-start justify-start border-l px-4">
             <List
-              dataSource={Object.entries(question?.options).sort()}
+              dataSource={[...Object.entries(question?.options).sort()]}
               renderItem={(item, index) => (
                 <List.Item>
                   <label className="text-lg mx-5 ">{item[0]}</label>
@@ -168,7 +167,6 @@ function QuizQuestions({ quiz, name }) {
                     onChange={() => {
                       setselectedAnswer(item[0]);
                     }}
-                    value={selectedAnswer}
                     className="text-blue-700"
                     name="radioButton"
                     type="radio"
@@ -189,7 +187,7 @@ function QuizQuestions({ quiz, name }) {
                 Result
               </Button>
             )}
-          </div>
+          </form>
         </div>
       )}
     </>

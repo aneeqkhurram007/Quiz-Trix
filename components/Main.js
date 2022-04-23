@@ -48,8 +48,23 @@ const Main = () => {
             </SubMenu>
           </Menu>
         </Sider>
-        <Content className="" style={{ padding: "0 24px", minHeight: 280 }}>
-          Content
+        <Content
+          className="flex flex-col items-center w-full bg-no-repeat bg-cover"
+          style={{
+            padding: "0 24px",
+            minHeight: 280,
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1606326608690-4e0281b1e588?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80')",
+          }}
+        >
+          <div>
+            <h1 className="text-5xl mt-10 p-2 font-semibold bg-white text-gray-700">
+              Welcome to the Quiz Trix
+            </h1>
+            <p className="mt-10 font-semibold text-gray-700 p-2 bg-white text-2xl">
+              Select a subject from side panel and start taking a quiz
+            </p>
+          </div>
         </Content>
       </Layout>
     </Content>
