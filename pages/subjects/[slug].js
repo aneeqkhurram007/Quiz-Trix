@@ -118,7 +118,7 @@ export default Subject;
 function QuizQuestions({ userId, subject, quiz, name }) {
   const [counter, setcounter] = useState(0);
   const [question, setquestion] = useState(quiz[0]);
-  const [selectedAnswer, setselectedAnswer] = useState("");
+  const [selectedAnswer, setselectedAnswer] = useState("NotSelected");
   const [answers, setanswers] = useState([]);
   const [initialTime, setinitialTime] = useState(30000 * quiz.length);
   const interval = 1000;
@@ -133,13 +133,13 @@ function QuizQuestions({ userId, subject, quiz, name }) {
 
   const nextQuestion = () => {
     setanswers([...answers, selectedAnswer]);
-    setselectedAnswer(undefined);
+    setselectedAnswer("NotSelected");
     setcounter(counter + 1);
     setquestion(quiz[counter + 1]);
   };
   const result = () => {
     setanswers([...answers, selectedAnswer]);
-    setselectedAnswer(null);
+    setselectedAnswer("NotSelected");
     setcounter(counter + 1);
   };
   return (
@@ -157,6 +157,7 @@ function QuizQuestions({ userId, subject, quiz, name }) {
           subject={subject}
           questions={quiz}
           answers={answers}
+          testName={name}
         />
       ) : (
         <div className="flex-1 flex w-full min-h-fit p-10">

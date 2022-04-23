@@ -58,10 +58,10 @@ const Main = () => {
           }}
         >
           <div>
-            <h1 className="text-5xl mt-10 p-2 font-semibold bg-white text-gray-700">
+            <h1 className="text-5xl mt-10 rounded-lg p-2 font-semibold bg-white text-gray-700">
               Welcome to the Quiz Trix
             </h1>
-            <p className="mt-10 font-semibold text-gray-700 p-2 bg-white text-2xl">
+            <p className="mt-10 font-semibold rounded-lg text-gray-700 p-2 bg-white text-2xl">
               Select a subject from side panel and start taking a quiz
             </p>
           </div>

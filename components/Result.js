@@ -1,31 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { XIcon, CheckIcon } from "@heroicons/react/solid";
 import { db } from "../firebase";
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 
-const Result = ({ subject, userId, questions, answers }) => {
+const Result = ({ subject, userId, questions, answers, testName }) => {
   const [score, setscore] = useState(0);
+  const [answersArray, setAnswersArray] = useState(answers.length <= 0 ? Array(questions.length).fill("NotSelected") : answers)
   useEffect(() => {
+    let answersArr = answersArray;
+    const arrayDifference = questions.length - answersArray.length
+    if (arrayDifference > 0) {
+      for (let index = 0; index < arrayDifference; index++) {
+        answersArr = [...answersArr, "NotSelected"]
+      }
+    }
     let score = 0;
     const result = questions.map((question, index) => {
-      question.answer == answers[index] ? score + 1 : score;
+      score = question.answer == answersArr[index] ? score + 1 : score;
       return {
         question: question.question,
         correctAnswer: question.answer,
-        selectedAnswer: answers[index],
+        selectedAnswer: answersArr[index],
       };
     });
     async function updateResult() {
       try {
         await updateDoc(doc(db, `users/${userId}`), {
-          subject: {
-            [subject]: {
-              result,
-              score,
-              percentage: score / questions.length,
-              timestamp: serverTimestamp(),
-            },
+          testResults: arrayUnion({
+            subject,
+            testName,
+            result,
+            score,
+            percentage: score / questions.length,
           },
+          )
         });
       } catch (error) {
         console.log(error);
@@ -42,8 +50,8 @@ const Result = ({ subject, userId, questions, answers }) => {
           <li className="font-semibold" key={index}>
             <p>Question: {question.question}</p>
             <p>Correct answer: {question.answer}</p>
-            <p>Your answer: {answers[index]}</p>
-            {question.answer === answers[index] ? (
+            <p>Your answer: {answersArray[index]}</p>
+            {question.answer === answersArray[index] ? (
               <CheckIcon className="text-green-700 h-12" />
             ) : (
               <XIcon className="text-red-700 h-12" />

@@ -4,6 +4,7 @@ import { db, auth } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import UserCard from "./UserCard";
 import { ReloadOutlined } from "@ant-design/icons";
+import UserResult from "./UserResult";
 
 const { Panel } = Collapse;
 const AdminUser = () => {
@@ -36,6 +37,7 @@ const AdminUser = () => {
             extra={<p>{user.email}</p>}
           >
             <UserCard user={user} />
+            <UserResult data={user?.testResults} />
           </Panel>
         ))}
       </Collapse>
