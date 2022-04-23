@@ -1,7 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { XIcon, CheckIcon } from "@heroicons/react/solid";
-const Result = ({ questions, answers }) => {
+import { db } from "../firebase";
+import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+
+const Result = ({ subject, userId, questions, answers }) => {
   const [score, setscore] = useState(0);
+  useEffect(() => {
+    let score = 0;
+    const result = questions.map((question, index) => {
+      question.answer == answers[index] ? score + 1 : score;
+      return {
+        question: question.question,
+        correctAnswer: question.answer,
+        selectedAnswer: answers[index],
+      };
+    });
+    async function updateResult() {
+      try {
+        await updateDoc(doc(db, `users/${userId}`), {
+          [subject]: {
+            result,
+            score,
+            percentage: score / questions.length,
+            timestamp: serverTimestamp(),
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    updateResult();
+  }, []);
+
   return (
     <div className="px-10">
       <h1 className="text-4xl font-semibold">Result</h1>

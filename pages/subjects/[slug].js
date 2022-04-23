@@ -84,8 +84,10 @@ const Subject = () => {
                     onClick={() => {
                       setquizSection(
                         <QuizQuestions
+                          userId={data?.id}
                           quiz={test.questions}
                           name={test.testName}
+                          subject={router.query.slug}
                         />
                       );
                       setsection(false);
@@ -113,7 +115,7 @@ const Subject = () => {
 };
 
 export default Subject;
-function QuizQuestions({ quiz, name }) {
+function QuizQuestions({ userId, subject, quiz, name }) {
   const [counter, setcounter] = useState(0);
   const [question, setquestion] = useState(quiz[0]);
   const [selectedAnswer, setselectedAnswer] = useState("");
@@ -150,7 +152,12 @@ function QuizQuestions({ quiz, name }) {
         </small>
       </h1>
       {counter === quiz.length ? (
-        <Result questions={quiz} answers={answers} />
+        <Result
+          userId={userId}
+          subject={subject}
+          questions={quiz}
+          answers={answers}
+        />
       ) : (
         <div className="flex-1 flex w-full min-h-fit p-10">
           <div className="w-1/2 border-r flex items-start justify-start pl-10">
