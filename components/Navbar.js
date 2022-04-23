@@ -41,7 +41,6 @@ export default function Navbar(props) {
           <Link href="/">Home</Link>
         </Menu.Item>
 
-        <Menu.Item key="2">About</Menu.Item>
         {userData?.isSuperUser && (
           <Menu.Item key="3">
             <Link href="/admin">Admin Panel</Link>

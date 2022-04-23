@@ -18,11 +18,13 @@ const Result = ({ subject, userId, questions, answers }) => {
     async function updateResult() {
       try {
         await updateDoc(doc(db, `users/${userId}`), {
-          [subject]: {
-            result,
-            score,
-            percentage: score / questions.length,
-            timestamp: serverTimestamp(),
+          subject: {
+            [subject]: {
+              result,
+              score,
+              percentage: score / questions.length,
+              timestamp: serverTimestamp(),
+            },
           },
         });
       } catch (error) {

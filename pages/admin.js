@@ -13,7 +13,6 @@ const Admin = () => {
     if (error) {
       router.replace("/login");
     }
-    console.log(data);
   }, [data, loading, error]);
   return (
     <div className="flex justify-between flex-col">

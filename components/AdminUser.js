@@ -28,7 +28,7 @@ const AdminUser = () => {
       >
         Refresh
       </Button>
-      <Collapse>
+      <Collapse accordion>
         {user?.map((user) => (
           <Panel
             header={user.firstName + " " + user.lastName}
